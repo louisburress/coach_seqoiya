@@ -1,17 +1,25 @@
 version: '3'
-
 services:
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend-app
+      dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3001"
+    volumes:
+      - ./frontend-app:/app
+      - /app/node_modules  # Avoid overwriting node_modules in container
+    environment:
+      - NODE_ENV=production
     depends_on:
       - backend
-
   backend:
-    build: ./backend
+    build:
+      context: ./backend-app
+      dockerfile: Dockerfile
     ports:
       - "5000:5000"
-    environment:
-      - NODE_ENV=development
+    volumes:
+      - ./backend-app:/app  # Correct path to backend folder
+      - /app/node_modules  # Avoid overwriting node_modules in container
 

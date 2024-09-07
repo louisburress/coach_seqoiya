@@ -1,7 +1,7 @@
 # Dockerfile for backend
 
 # Base image
-FROM node:16-alpine
+FROM node:alpine
 
 # Set working directory
 WORKDIR /app

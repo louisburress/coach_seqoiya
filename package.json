@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "coach_qoiya",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "express": "^4.19.2"
+    "punycode": "^2.3.1"
   }
 }
