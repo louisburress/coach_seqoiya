@@ -1,23 +1,21 @@
-# Dockerfile for backend
-
 # Base image
-FROM node:alpine
+FROM node:18-alpine
 
-# Set working directory
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json and package-lock.json files first to install dependencies
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install the necessary dependencies
+RUN npm install --unsafe-perm=true
 
-# Copy the rest of the code
+# Copy the rest of the application code to the container
 COPY . .
 
-# Expose the port
+# Expose the backend port (5000)
 EXPOSE 5000
 
-# Run the app
+# Start the backend application
 CMD ["node", "index.js"]
 

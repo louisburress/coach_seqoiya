@@ -2,24 +2,25 @@ version: '3'
 services:
   frontend:
     build:
-      context: ./frontend-app
-      dockerfile: Dockerfile
+      context: ./frontend-app  # Ensure correct path to the frontend app directory
+      dockerfile: Dockerfile  # Ensure that Dockerfile is in ./frontend-app directory
     ports:
       - "3001:3001"
     volumes:
-      - ./frontend-app:/app
+      - ./frontend-app:/app  # Mount frontend app directory
       - /app/node_modules  # Avoid overwriting node_modules in container
     environment:
       - NODE_ENV=production
-    depends_on:
-      - backend
+      - PORT=3001
+    restart: unless-stopped  # Ensure container restarts if stopped
+
   backend:
     build:
-      context: ./backend-app
-      dockerfile: Dockerfile
+      context: ./backend-app  # Ensure correct path to the backend app directory
+      dockerfile: Dockerfile  # Ensure that Dockerfile is in ./backend-app directory
     ports:
       - "5000:5000"
     volumes:
-      - ./backend-app:/app  # Correct path to backend folder
-      - /app/node_modules  # Avoid overwriting node_modules in container
+      - ./backend-app:/app  # Mount backend app directory
+    restart: unless-stopped
 
