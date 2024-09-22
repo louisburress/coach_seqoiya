@@ -1,0 +1,35 @@
+/* Home.module.css */
+
+.homeContainer {
+  text-align: center;
+  padding: 20px;
+}
+
+.headerSection {
+  background-color: #f8f8f8;
+  padding: 40px;
+}
+
+.ctaButton {
+  background-color: blue;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.featuredSection {
+  margin-top: 30px;
+}
+
+.teamPhoto, .championPhoto, .athleticPhoto {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 10px;
+}
+
+.ctaButtons {
+  margin-top: 20px;
+}
+
