@@ -1,26 +1,15 @@
-version: '3'
 services:
   frontend:
-    build:
-      context: ./frontend-app  # Ensure correct path to the frontend app directory
-      dockerfile: Dockerfile  # Ensure that Dockerfile is in ./frontend-app directory
+    image: louisburress/coach_qoiya.frontend:latest
     ports:
       - "3001:3001"
-    volumes:
-      - ./frontend-app:/app  # Mount frontend app directory
-      - /app/node_modules  # Avoid overwriting node_modules in container
     environment:
       - NODE_ENV=production
-      - PORT=3001
-    restart: unless-stopped  # Ensure container restarts if stopped
+    restart: unless-stopped
 
   backend:
-    build:
-      context: ./backend-app  # Ensure correct path to the backend app directory
-      dockerfile: Dockerfile  # Ensure that Dockerfile is in ./backend-app directory
+    image: louisburress/coach_qoiya.backend:latest
     ports:
       - "5000:5000"
-    volumes:
-      - ./backend-app:/app  # Mount backend app directory
     restart: unless-stopped
 

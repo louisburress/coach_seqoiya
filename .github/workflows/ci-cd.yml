@@ -4,42 +4,49 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  build_and_deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2  # Check out your repository into the GitHub Actions runner
 
-    # Building the Docker image
-    - name: Build the Docker image
-      run: |
-        docker build -t louisburress/coach_qoiya:v1 .
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # Logging into DockerHub
-    - name: Log in to DockerHub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push Frontend Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend-app
+          file: ./frontend-app/Dockerfile
+          push: true
+          tags: louisburress/coach_qoiya.frontend:latest
 
-    # Pushing the Docker image to DockerHub
-    - name: Push Image to DockerHub
-      run: |
-        docker push louisburress/coach_qoiya:v1
+      - name: Build and push Backend Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./backend-app
+          file: ./backend-app/Dockerfile
+          push: true
+          tags: louisburress/coach_qoiya.backend:latest
 
-    # Deploying to AWS EC2
-    - name: Deploy to EC2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        script: |
-          docker pull louisburress/coach_qoiya:v1
-          docker-compose up -d
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2  # Ensure the repository content is available for the deploy step
 
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            echo "${{ secrets.DOCKER_COMPOSE_YML }}" > docker-compose.yml  # Create docker-compose.yml on the VM
+            docker-compose pull  # Pull the latest images
+            docker-compose up -d  # Deploy containers in detached mode
 
