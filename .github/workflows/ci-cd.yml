@@ -1,41 +1,41 @@
-name: CI/CD Pipeline  # Name of the workflow
+name: CI/CD Pipeline
 
-on:  # Defines when the workflow should run
-  push:  # Trigger on push events
+on:
+  push:
     branches:
-      - main  # Specify which branch, 'main' in this case
-  pull_request:  # Trigger on pull request events
+      - main
+  pull_request:
     branches:
-      - main  # Only for PRs targeting the 'main' branch
+      - main
 
-jobs:  # Defines the jobs to run
-  build:  # First job to build the Docker image
-    runs-on: ubuntu-latest  # Specifies the runner environment, 'ubuntu-latest' here refers to the latest version of Ubuntu provided by GitHub Actions runners
-    steps:  # Steps to execute in the build job
-    - uses: actions/checkout@v2  # Checks out the repository code under $GITHUB_WORKSPACE
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag username/myapp:${{ github.sha }}  # Build Docker image and tag it with the commit SHA
+      run: docker build . --file Dockerfile --tag louisburress/coach_qoiya:v1
 
-  deploy:  # Deployment job, depends on successful build
-    needs: build  # Ensures deploy runs only after build is successful
-    runs-on: ubuntu-latest  # Also runs on a virtual Ubuntu machine
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Log in to DockerHub
-      uses: docker/login-action@v1  # Logs into DockerHub using the provided credentials
+      uses: docker/login-action@v1
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}  # Your DockerHub username, stored as a secret
-        password: ${{ secrets.DOCKER_PASSWORD }}  # Your DockerHub password, stored as a secret
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Push Image to DockerHub
       run: |
-        docker push username/myapp:${{ github.sha }}  # Pushes the built image to DockerHub
+        docker push louisburress/coach_qoiya:v1
     - name: Deploy to EC2
-      uses: appleboy/ssh-action@master  # SSH into your EC2 instance
+      uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.HOST }}  # EC2 hostname or IP address
-        username: ${{ secrets.USERNAME }}  # SSH username
-        key: ${{ secrets.SSH_KEY }}  # SSH private key
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
         script: |
-          docker pull username/myapp:${{ github.sha }}  # Pull the latest image
-          docker-compose up -d  # Start or update containers
+          docker pull louisburress/coach_qoiya:v1
+          docker-compose up -d
 
