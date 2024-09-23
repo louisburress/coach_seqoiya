@@ -9,7 +9,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2  # Check out your repository into the GitHub Actions runner
+      - uses: actions/checkout@v2
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -37,7 +37,12 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2  # Ensure the repository content is available for the deploy step
+      - uses: actions/checkout@v2
+
+      - name: Start SSH agent
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add <(echo "${{ secrets.SSH_PRIVATE_KEY }}")
 
       - name: SSH and Deploy
         uses: appleboy/ssh-action@master
@@ -46,7 +51,6 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            echo "${{ secrets.DOCKER_COMPOSE_YML }}" > docker-compose.yml  # Create docker-compose.yml on the VM
-            docker-compose pull  # Pull the latest images
-            docker-compose up -d  # Deploy containers in detached mode
+            docker-compose pull
+            docker-compose up -d
 
