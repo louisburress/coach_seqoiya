@@ -33,24 +33,24 @@ jobs:
           push: true
           tags: louisburress/coach_qoiya.backend:latest
 
-deploy:
-  needs: build-and-push
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v2
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
-    - name: Set up SSH agent
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    - name: SSH and Deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        port: ${{ secrets.PORT }}  # Ensure you have this variable in your secrets if needed
-        script: |
-          docker-compose pull
-          docker-compose up -d
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker-compose pull
+            docker-compose up -d
 
