@@ -9,6 +9,9 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
@@ -30,35 +33,4 @@ jobs:
           file: ./backend-app/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.backend:latest
-
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set up SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan github.com >> ~/.ssh/known_hosts
-
-      - name: Create docker-compose file from secret
-        run: |
-          echo "${{ secrets.DOCKER_COMPOSE_FILE }}" > docker-compose.yml
-
-      - name: Deploy to AWS EC2
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: ${{ secrets.HOST_IP }}
-          username: ${{ secrets.HOST_USERNAME }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            # Ensure Docker is running
-            sudo systemctl start docker
-            # Pull the latest Docker images
-            docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.frontend:latest
-            docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.backend:latest
-            # Start the application using Docker Compose
-            docker-compose down
-            docker-compose up -d
 
