@@ -45,14 +45,14 @@ jobs:
           username: ${{ secrets.HOST_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo usermod -aG docker $USER           
-          # Clone the repository
-            git clone git@github.com:louisburress/coach_seqoiya.git .
             # Ensure Docker is running
             sudo systemctl start docker
+            # Assuming docker-compose.yml and .env are in the home directory
+            cd ~
             # Pull the latest Docker images
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.frontend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.backend:latest
-            # Start the application using Docker Compose
+            # Restart the application using Docker Compose
             docker-compose down
             docker-compose up -d
+
