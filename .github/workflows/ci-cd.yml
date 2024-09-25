@@ -53,5 +53,6 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.frontend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.backend:latest
             # Start the application using Docker Compose
+
             docker-compose down
             docker-compose up -d
