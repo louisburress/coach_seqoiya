@@ -46,7 +46,7 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           script: |
             # Clone the repository
-            git clone git@github.com:yourusername/coach_seqoiya.git .
+            git clone git@github.com:louisburress/coach_seqoiya.git .
             # Ensure Docker is running
             sudo systemctl start docker
             # Pull the latest Docker images
