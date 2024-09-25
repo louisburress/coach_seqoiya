@@ -43,21 +43,17 @@ jobs:
         with:
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key: ${{ secrets.DEPLOY_KEY }}
           script: |
-            # Create the directory if it doesn't exist
-            mkdir -p ~/coach_seqoiya
-            cd ~/coach_seqoiya
-            # Clone or pull the repository
-            if [ -d ".git" ]; then
-              git pull
-            else
-              git clone https://github.com/yourusername/coach_seqoiya.git .
-            fi
+            # Clone the repository
+            git clone git@github.com:yourusername/coach_seqoiya.git .
+            # Ensure Docker is running
+            sudo systemctl start docker
             # Pull the latest Docker images
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.frontend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.backend:latest
             # Start the application using Docker Compose
             docker-compose down
             docker-compose up -d
+
 

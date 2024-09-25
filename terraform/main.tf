@@ -77,7 +77,8 @@ resource "aws_instance" "coach_seqoiya_web" {
                 sudo systemctl enable docker
                 sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
                 sudo chmod +x /usr/local/bin/docker-compose
-                sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+                sudo usermod -aG docker $USER
+		sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
               EOF
 
   tags = {
