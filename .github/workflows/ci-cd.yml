@@ -49,10 +49,10 @@ jobs:
             git clone git@github.com:louisburress/coach_seqoiya.git .
             # Ensure Docker is running
             sudo systemctl start docker
+            sudo usermod -aG docker $USER
             # Pull the latest Docker images
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.frontend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.backend:latest
             # Start the application using Docker Compose
-
             docker-compose down
             docker-compose up -d
