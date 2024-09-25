@@ -26,16 +26,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.frontend:latest
 
-      # Add a Docker logout before pushing the next image just to be sure
-      - name: Log out from Docker Hub
-        run: docker logout
-
-      - name: Log in again to Docker Hub for backend push
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Build and push Backend Docker image
         uses: docker/build-push-action@v2
         with:
@@ -49,20 +39,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to AWS EC2
-        uses: appleboy/ssh-action@v0.1.8  # Note: Ensure to check compatibility with your setup
+        uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.HOST_IP }}
           username: ${{ secrets.HOST_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # Ensure Docker is running
-            sudo systemctl start docker || true
-
-            # Pull the latest Docker images from DockerHub
+            # Create the directory if it doesn't exist
+            mkdir -p ~/coach_seqoiya
+            cd ~/coach_seqoiya
+            # Clone or pull the repository
+            if [ -d ".git" ]; then
+              git pull
+            else
+              git clone https://github.com/yourusername/coach_seqoiya.git .
+            fi
+            # Pull the latest Docker images
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.frontend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.backend:latest
-
-            # Use docker-compose to restart the services
+            # Start the application using Docker Compose
             docker-compose down
             docker-compose up -d
 
