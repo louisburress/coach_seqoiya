@@ -38,6 +38,14 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
       - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@v0.1.8
         with:
@@ -55,5 +63,4 @@ jobs:
             # Start the application using Docker Compose
             docker-compose down
             docker-compose up -d
-
 
