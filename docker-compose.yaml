@@ -1,16 +1,16 @@
 services:
   frontend:
-    build: ./frontend-app
+    image: louisburress/coach_qoiya.frontend:latest
     ports:
       - "3001:3001"
-    environment: 
+    environment:
       - NODE_ENV=production
     restart: unless-stopped
     networks:
       - webnet
 
   backend:
-    build: ./backend-app
+    image: louisburress/coach_qoiya.backend:latest
     ports:
       - "5000:5000"
     restart: unless-stopped
@@ -18,7 +18,7 @@ services:
       - webnet
 
   nginx:
-    build: ./nginx
+    image: louisburress/coach_qoiya.nginx:latest
     ports:
       - "80:80"
     depends_on:
