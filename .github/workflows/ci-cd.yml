@@ -34,6 +34,14 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.backend:latest
           push: true
 
+      - name: Build and push Nginx Docker image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./nginx
+          file: ./nginx/Dockerfile
+          tags: ${{ secrets.DOCKER_USERNAME }}/coach_qoiya.nginx:latest
+          push: true
+
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
@@ -45,14 +53,13 @@ jobs:
           username: ${{ secrets.HOST_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Write the docker-compose file from secret to the home directory
-            echo "${{ secrets.DOCKER_COMPOSE_FILE }}" > ~/docker-compose.yml
+            # Write the docker-compose.yml from secret to the home directory
+            echo "${{ secrets.DOCKER_COMPOSE_YML }}" > ~/docker-compose.yml
             # Ensure Docker is running
             sudo systemctl start docker
-            # Change directory to the home directory
+            # Navigate to the home directory where docker-compose.yml is saved
             cd ~
             # Restart the application using Docker Compose
             docker-compose down
             docker-compose up -d
-
 
