@@ -72,7 +72,7 @@ resource "aws_instance" "coach_seqoiya_web" {
                 #!/bin/bash
                 sudo yum update -y
                 sudo yum install git -y
-                sudo amazon-linux-extras install docker -y
+                sudo yum install docker -y
                 sudo systemctl start docker       
          	sudo systemctl enable docker
 		sudo usermod -aG docker $USER

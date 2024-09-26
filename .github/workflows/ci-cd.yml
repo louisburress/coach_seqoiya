@@ -57,6 +57,7 @@ jobs:
             echo "${{ secrets.DOCKER_COMPOSE_YML }}" > ~/docker-compose.yml
             # Ensure Docker is running
             sudo systemctl start docker
+            sudo systemctl enable docker
             # Navigate to the home directory where docker-compose.yml is saved
             cd ~
             # Restart the application using Docker Compose
