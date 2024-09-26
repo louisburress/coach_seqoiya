@@ -69,17 +69,28 @@ resource "aws_instance" "coach_seqoiya_web" {
   vpc_security_group_ids = [aws_security_group.web.id]
 
   user_data = <<-EOF
-                #!/bin/bash
-                sudo yum update -y
-                sudo yum install git -y
-                sudo yum install docker -y
-                sudo systemctl start docker       
-         	sudo systemctl enable docker
-		sudo usermod -aG docker $USER
-                sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-                sudo chmod +x /usr/local/bin/docker-compose
-		sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-              EOF
+#!/bin/bash
+# Update YUM package repository
+sudo yum update -y
+
+# Install Git
+sudo yum install git -y
+
+# Install Docker
+sudo yum install docker -y
+
+# Start and enable Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Add the default user to the Docker group
+sudo usermod -aG docker $USER
+
+# Install Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.5.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+EOF
 
   tags = {
     Name = "CoachSeqoiya-web"
