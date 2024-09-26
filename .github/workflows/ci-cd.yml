@@ -58,6 +58,7 @@ jobs:
             # Ensure Docker is running
             sudo systemctl start docker
             sudo systemctl enable docker
+            sudo usermod -aG docker $USER
             # Navigate to the home directory where docker-compose.yml is saved
             cd ~
             # Restart the application using Docker Compose
