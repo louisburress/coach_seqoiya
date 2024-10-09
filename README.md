@@ -1,7 +1,9 @@
 Coach Seqoiya Web Application
+
 This project is a web-based platform designed to manage and schedule athletic training sessions. The platform consists of both a frontend and backend service, but the primary focus of this project is on its CI/CD pipeline and infrastructure automation.
 
 Project Overview
+
 Frontend App: Built using JavaScript, HTML, and CSS, the frontend offers a user-friendly interface for both athletes and coaches. It enables users to view workout plans, training schedules, and communicate with coaches.
 
 Backend App: The backend handles API requests and data processing to support the frontend. It stores athlete profiles, tracks training progress, and manages the scheduling functionality.
